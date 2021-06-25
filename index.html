@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Data Tables - Ajax Data rendering</title>
+    <script src="./lib/JQuery_3.5.1.js"></script>
+    <script src="./lib/DataTables_JS.js"></script>
+    <link rel="stylesheet" href="./lib/DataTbales_CSS.css">
+    <script>
+        $(document).ready(function () {
+            var table = $('#example').DataTable({
+                "ajax": {
+                    "url": "http://localhost:8080/api/user",
+                    "dataSrc": ""
+
+                },
+                "columns": [
+                    { "data": "id" },
+                    { "data": "FirstName" },
+                    { "data": "LastName" },
+                    { "data": "Address" },
+                    { "data": "City" },
+
+                ],
+                "columnDefs": [{
+                    "targets": 5,
+                    "data": "status",
+                    //"defaultContent": "<button>Click!</button>",
+                    render: function (data, type, row, meta) {
+                        // console.log("data-->", data);
+                        if (data === 1) {
+                            return '<span style="color : green;">Approved</span>';
+                        }
+                        else if (data === 2) {
+                            return '<span style="color : red;">Cancelled</span>';
+                        }
+                        else {
+                            return '<button id="apr" style="color:green">Approve</button><button id="rjts" style="color:red;margin-left:5px;">Reject</button>';
+                        }
+                    }
+                }]
+            });
+
+            $('#example tbody').on('click', 'button', function () {
+                var data = table.row($(this).parents('tr')).data();
+                console.log("data--->", data);
+                if (this.id === "apr") {
+                    alert("Approve request: " + data['id']);
+                } else if (this.id === "rjts") {
+                    alert("Reject request : " + data['id']);
+                } else {
+                    alert("Access denied");
+                }
+
+            });
+        });
+
+    </script>
+</head>
+
+<body>
+
+    <h1>JQuery Data Tables Demo : Ajax Data rendering</h1>
+
+    <table id="example" class="display" style="width:100%">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Address</th>
+                <th>City</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+    </table>
+
+</body>
+
+</html>
